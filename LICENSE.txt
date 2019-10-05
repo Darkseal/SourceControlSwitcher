@@ -28,4 +28,4 @@ https://github.com/ceztko/SccAutoSwitcher
 SccAutoSwitcher original MIT license is available here:
 /Resources/LICENSE_SCCAS.txt
 
-GitHub: https://github.com/Darkseal/SCMSwitch
+GitHub: https://github.com/Darkseal/SourceControlSwitcher
