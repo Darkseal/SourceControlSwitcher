@@ -1,6 +1,9 @@
-SCMSwitch - v1.0
----------------------
+SourceControlSwitch - v1.0
+------------------------------------------
   * Async Loading
-  * VS2019 Support
-  * Basic functionalities
-
+  * Added support for VS2019
+  * Added support for the following Source Control Providers:
+  ** SVN:			AnkhSVN, VisualSVN, VisualSVN 2019
+  ** GIT:			Visual Studio Tools for Git, EZ-GIT (Easy Git Integration Tool), Git Source Control Provider
+  ** HG/MERCURIAL:	HgSccPackage, VisualHG, VSHG
+  ** HELIX:			P4VS
