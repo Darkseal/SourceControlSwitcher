@@ -1,0 +1,6 @@
+SCMSwitch - v1.0
+---------------------
+  * Async Loading
+  * VS2019 Support
+  * Basic functionalities
+

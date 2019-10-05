@@ -1,0 +1,14 @@
+BUILD
+======
+
+Install Visual Studio 2019 [1] or an older version (up to 2015)[2]
+Just hit F6. Debug with F5.
+
+Build script installs the VSPackage in %LOCALAPPDATA%\Microsoft\VisualStudio\16.0Exp\Extensions
+"Exp" means a VS local storage for experimental purposes.
+
+It is run by launching the DevEnv with:
+c:\Program Files (x86)\Microsoft Visual Studio 16.0\Common7\IDE\devenv.exe /rootsuffix Exp
+
+[1] https://visualstudio.microsoft.com/it/downloads/
+[2] https://visualstudio.microsoft.com/it/vs/older-downloads/

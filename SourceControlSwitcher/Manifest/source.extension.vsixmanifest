@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+    <Metadata>
+        <Identity Id="F55A99AF-CA1C-4DE7-BBFB-08CF4F3AB282" Version="1.0.0" Language="en-US" Publisher="Darkseal" />
+        <DisplayName>Source Control Switcher</DisplayName>
+        <Description xml:space="preserve">Automatically sets the Source Control Provider according to the one used by the current Visual Studio project.</Description>
+        <License>Resources\LICENSE.txt</License>
+        <Icon>Resources\Icon.png</Icon>
+        <PreviewImage>Resources\Preview.png</PreviewImage>
+    </Metadata>
+    <Installation InstalledByMsi="false">
+        <InstallationTarget Version="[12.0,17.0]" Id="Microsoft.VisualStudio.Pro" />
+        <InstallationTarget Version="[12.0,13.0)" Id="Microsoft.VisualStudio.Premium" />
+        <InstallationTarget Version="[12.0,13.0)" Id="Microsoft.VisualStudio.Ultimate" />
+        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[13.0,17.0]" />
+        <InstallationTarget Id="Microsoft.VisualStudio.Enterprise" Version="[14.0,17.0)" />
+    </Installation>
+    <Dependencies>
+        <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.6.1,4.7.2)" />
+        <Dependency d:Source="Installed" Id="Microsoft.VisualStudio.MPF.12.0" DisplayName="Visual Studio MPF 12.0" Version="[12.0,13.0)" />
+    </Dependencies>
+    <Assets>
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+    </Assets>
+    <Prerequisites>
+        <Prerequisite Id="Microsoft.Net.Component.4.7.2.SDK" Version="[15.0.26208.0,17.0)" DisplayName=".NET Framework 4.7.2 SDK" />
+    </Prerequisites>
+</PackageManifest>
