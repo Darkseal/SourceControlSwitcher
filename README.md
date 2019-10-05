@@ -7,6 +7,7 @@ Supported Source Control Providers are:
 
  * **AnkhSVN** *(Subversion, default)*;
  * **VisualSVN** *(Subversion)*;
+ * **VisualSVN 2019** *(Subversion)*;
  * **Visual Studio Tools for Git** *(Git, default)*;
  * **EZ-GIT (Easy Git Integration Tool)** *(Git)*;
  * **Git Source Control Provider** *(Git)*;
