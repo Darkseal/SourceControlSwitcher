@@ -39,6 +39,6 @@ and lack VS2019 support and async loading support
 (which led me to create this project).
 
 ## Useful References
- * [SourceControlSwitch official page](https://www.ryadel.com/en/portfolio/source-control-switcher/)
- * [SourceControlSwitch on GitHub](https://github.com/Darkseal/SourceControlSwitcher/)
- * [SourceControlSwitch on Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=Ryadel.SourceControlSwitcher)
+ * [**Source Control Switcher** official page](https://www.ryadel.com/en/portfolio/source-control-switcher/)
+ * [**Source Control Switcher** on GitHub](https://github.com/Darkseal/SourceControlSwitcher/)
+ * [**Source Control Switcher** on Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=Ryadel.SourceControlSwitcher)
