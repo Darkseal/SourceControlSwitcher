@@ -60,7 +60,7 @@ namespace SourceControlSwitcher
         [Description("EZ-GIT")]
         [Display(Name = "EZ-GIT")]
         [LocDisplayName("EZ-GIT")]
-        EzGit,
+        EzGit_2019,
 
         [Description("Visual Studio Tools for Git")]
         [Display(Name = "Visual Studio Tools for Git")]

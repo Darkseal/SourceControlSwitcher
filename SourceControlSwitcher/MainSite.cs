@@ -52,11 +52,10 @@ namespace SourceControlSwitcher
 
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            // disabled - throws a System.MissingMethodException
-            // the switch is already performed within the base.InitializeAsync() method.
-            // await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
-
             await base.InitializeAsync(cancellationToken, progress);
+
+            // NOTE: this switch is already performed within the base.InitializeAsync() method.
+            await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
             _CurrentSolutionRcsType = RcsType.Unknown;
 
@@ -178,11 +177,11 @@ namespace SourceControlSwitcher
                         provider = SccProvider.GitSourceControlProvider;
                         return true;
                     }
-                case GitSccProvider.EzGit:
+                case GitSccProvider.EzGit_2019:
                     {
                         packageGuid = new Guid(EzGitPackagedId);
                         sccProviderGuid = new Guid(EzGitProviderdId);
-                        provider = SccProvider.EzGit;
+                        provider = SccProvider.EzGit_2019;
                         return true;
                     }
                 default:

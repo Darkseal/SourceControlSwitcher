@@ -73,7 +73,7 @@ namespace SourceControlSwitcher
                 case GitSourceControlProviderSccProviderId:
                     return (IsSccPackageInstalled(GitSourceControlProviderPackagedId))
                         ? SccProvider.GitSourceControlProvider
-                        : SccProvider.EzGit;
+                        : SccProvider.EzGit_2019;
                 case HgSccPackageSccProviderId:
                     return SccProvider.HgSccPackage;
                 case VisualHGSccProviderId:
@@ -124,7 +124,7 @@ namespace SourceControlSwitcher
                     return RcsType.Subversion;
                 case SccProvider.VisualStudioToolsForGit:
                 case SccProvider.GitSourceControlProvider:
-                case SccProvider.EzGit:
+                case SccProvider.EzGit_2019:
                     return RcsType.Git;
                 case SccProvider.HgSccPackage:
                 case SccProvider.VSHG:
@@ -223,7 +223,7 @@ namespace SourceControlSwitcher
                 return GitSccProvider.GitSourceControlProvider;
 
             if (IsSccPackageInstalled(EzGitPackagedId))
-                return GitSccProvider.EzGit;
+                return GitSccProvider.EzGit_2019;
 
             return GitSccProvider.Disabled;
         }
@@ -328,7 +328,7 @@ namespace SourceControlSwitcher
         [Description("EZ-GIT")]
         [Display(Name = "EZ-GIT")]
         [LocDisplayName("EZ-GIT")]
-        EzGit,
+        EzGit_2019,
 
         [Description("Visual Studio Tools for Git")]
         [Display(Name = "Visual Studio Tools for Git")]
