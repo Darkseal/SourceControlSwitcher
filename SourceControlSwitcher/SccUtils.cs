@@ -16,35 +16,29 @@ namespace SourceControlSwitcher
 {
     public partial class MainSite
     {
-        public const string AnkhSvnPackageId = "604ad610-5cf9-4bd5-8acc-f49810e2efd4";
+        public static readonly string[] AnkhSvnPackageIds = { "604ad610-5cf9-4bd5-8acc-f49810e2efd4" };
         public const string AnkhSvnSccProviderId = "8770915b-b235-42ec-bbc6-8e93286e59b5";
 
-        public const string VisualSvnPackageId = "133240d5-fafa-4868-8fd7-5190a259e676";
+        public static readonly string[] VisualSvnPackageIds = { "133240d5-fafa-4868-8fd7-5190a259e676", "83F1E506-04BC-4694-9C7D-C55B120E11F0" };
         public const string VisualSvnSccProviderId = "937cffd6-105a-4c00-a044-33ffb48a3b8f";
 
-        public const string VisualSvn2019PackageId = "83F1E506-04BC-4694-9C7D-C55B120E11F0";
-        public const string VisualSvn2019SccProviderId = "937cffd6-105a-4c00-a044-33ffb48a3b8f";
-
-        public const string VSToolsForGitPackagedId = "7fe30a77-37f9-4cf2-83dd-96b207028e1b";
+        public static readonly string[] VSToolsForGitPackageIds = { "7fe30a77-37f9-4cf2-83dd-96b207028e1b" };
         public const string VSToolsForGitSccProviderId = "11b8e6d7-c08b-4385-b321-321078cdd1f8";
 
-        public const string GitSourceControlProviderPackagedId = "c4128d99-2000-41d1-a6c3-704e6c1a3de2";
-        public const string GitSourceControlProviderSccProviderId = "c4128d99-0000-41d1-a6c3-704e6c1a3de2";
+        public static readonly string[] EasyGitIntegrationToolsPackageIds = { "c4128d99-2000-41d1-a6c3-704e6c1a3de2", "88d658b3-e361-4e7f-8f4d-9e78f6e4515a" };
+        public const string EasyGitIntegrationToolsSccProviderId = "c4128d99-0000-41d1-a6c3-704e6c1a3de2";
 
-        public const string EzGitPackagedId = "88d658b3-e361-4e7f-8f4d-9e78f6e4515a";
-        public const string EzGitProviderdId = "c4128d99-0000-41d1-a6c3-704e6c1a3de2";
-
-        public const string HgSccPackagePackageId = "a7f26ca1-2000-4729-896e-0bbe9e380635";
+        public static readonly string[] HgSccPackagePackageIds = { "a7f26ca1-2000-4729-896e-0bbe9e380635" };
         public const string HgSccPackageSccProviderId = "a7f26ca1-0000-4729-896e-0bbe9e380635";
 
-        public const string VisualHGPackageId = "dadada00-dfd3-4e42-a61c-499121e136f3";
+        public static readonly string[] VisualHGPackageIds = { "dadada00-dfd3-4e42-a61c-499121e136f3" };
         public const string VisualHGSccProviderId = "dadada00-63c7-4363-b107-ad5d9d915d45";
 
-        public const string VSHGPackageId = "84a06d4f-da93-4015-a822-6b3d1b6d2756";
-        public const string VSHGProviderId = "dadada00-63c7-4363-b107-ad5d9d915d45";
+        public static readonly string[] VSHGPackageIds = { "84a06d4f-da93-4015-a822-6b3d1b6d2756" };
+        public const string VSHGProviderId = VisualHGSccProviderId;
 
-        public const string P4VSPackageId = "8d316614-311a-48f4-85f7-df7020f62357";
-        public const string P4VSPackageSccProviderId = "fda934f4-0492-4f67-a6eb-cbe0953649f0";
+        public static readonly string[] P4VSPackageIds = { "8d316614-311a-48f4-85f7-df7020f62357" };
+        public const string P4VSProviderId = "fda934f4-0492-4f67-a6eb-cbe0953649f0";
 
         public const string SourceControlSwitcherCollection = "SourceControlSwitcher";
 
@@ -55,32 +49,30 @@ namespace SourceControlSwitcher
 
         private static SccProvider GetCurrentSccProvider()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             return GetSccProviderFromGuid(GetCurrentSccProviderGuid());
         }
 
         private static SccProvider GetSccProviderFromGuid(string guid)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             switch (guid)
             {
                 case AnkhSvnSccProviderId:
                     return SccProvider.AnkhSvn;
                 case VisualSvnSccProviderId:
-                    return (IsSccPackageInstalled(VisualSvnPackageId))
-                        ? SccProvider.VisualSVN
-                        : SccProvider.VisualSVN_2019;
+                    return SccProvider.VisualSVN;
                 case VSToolsForGitSccProviderId:
                     return SccProvider.VisualStudioToolsForGit;
-                case GitSourceControlProviderSccProviderId:
-                    return (IsSccPackageInstalled(GitSourceControlProviderPackagedId))
-                        ? SccProvider.GitSourceControlProvider
-                        : SccProvider.EzGit_2019;
+                case EasyGitIntegrationToolsSccProviderId:
+                    return SccProvider.EasyGitIntegrationTools;
                 case HgSccPackageSccProviderId:
                     return SccProvider.HgSccPackage;
                 case VisualHGSccProviderId:
-                    return (IsSccPackageInstalled(VisualHGPackageId))
-                        ? SccProvider.VisualHG
-                        : SccProvider.VSHG;
-                case P4VSPackageId:
+                    return (IsSccPackageInstalled(VSHGPackageIds))
+                        ? SccProvider.VSHG
+                        : SccProvider.VisualHG;
+                case P4VSProviderId:
                     return SccProvider.P4VS;
                 default:
                     return SccProvider.Unknown;
@@ -123,8 +115,8 @@ namespace SourceControlSwitcher
                 case SccProvider.VisualSVN_2019:
                     return RcsType.Subversion;
                 case SccProvider.VisualStudioToolsForGit:
-                case SccProvider.GitSourceControlProvider:
-                case SccProvider.EzGit_2019:
+                case SccProvider.EasyGitIntegrationTools:
+                case SccProvider.GitTools2019:
                     return RcsType.Git;
                 case SccProvider.HgSccPackage:
                 case SccProvider.VSHG:
@@ -136,6 +128,7 @@ namespace SourceControlSwitcher
 
         public static void SetGitSccProvider(GitSccProvider provider)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             _SettingsStore.CreateCollection(SourceControlSwitcherCollection);
             if (provider == GitSccProvider.Default)
                 _SettingsStore.DeleteProperty(SourceControlSwitcherCollection, GitProviderProperty);
@@ -151,6 +144,7 @@ namespace SourceControlSwitcher
 
         public static void SetSubversionSccProvider(SubversionSccProvider provider)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             _SettingsStore.CreateCollection(SourceControlSwitcherCollection);
             if (provider == SubversionSccProvider.Default)
                 _SettingsStore.DeleteProperty(SourceControlSwitcherCollection, SubversionProviderProperty);
@@ -166,6 +160,7 @@ namespace SourceControlSwitcher
 
         public static void SetMercurialSccProvider(MercurialSccProvider provider)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             _SettingsStore.CreateCollection(SourceControlSwitcherCollection);
             if (provider == MercurialSccProvider.Default)
                 _SettingsStore.DeleteProperty(SourceControlSwitcherCollection, MercurialProviderProperty);
@@ -181,6 +176,7 @@ namespace SourceControlSwitcher
 
         public static void SetPerforceSccProvider(PerforceSccProvider provider)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             _SettingsStore.CreateCollection(SourceControlSwitcherCollection);
             if (provider == PerforceSccProvider.Default)
                 _SettingsStore.DeleteProperty(SourceControlSwitcherCollection, PerforceProviderProperty);
@@ -216,14 +212,11 @@ namespace SourceControlSwitcher
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            if (IsSccPackageInstalled(VSToolsForGitPackagedId))
+            if (IsSccPackageInstalled(EasyGitIntegrationToolsPackageIds))
+                return GitSccProvider.EasyGitIntegrationTools;
+
+            if (IsSccPackageInstalled(VSToolsForGitPackageIds))
                 return GitSccProvider.VisualStudioToolsForGit;
-
-            if (IsSccPackageInstalled(GitSourceControlProviderPackagedId))
-                return GitSccProvider.GitSourceControlProvider;
-
-            if (IsSccPackageInstalled(EzGitPackagedId))
-                return GitSccProvider.EzGit_2019;
 
             return GitSccProvider.Disabled;
         }
@@ -232,14 +225,11 @@ namespace SourceControlSwitcher
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            if (IsSccPackageInstalled(AnkhSvnPackageId))
-                return SubversionSccProvider.AnkhSVN;
-
-            if (IsSccPackageInstalled(VisualSvnPackageId))
+            if (IsSccPackageInstalled(VisualSvnPackageIds))
                 return SubversionSccProvider.VisualSVN;
 
-            if (IsSccPackageInstalled(VisualSvn2019PackageId))
-                return SubversionSccProvider.VisualSVN2019;
+            if (IsSccPackageInstalled(AnkhSvnPackageIds))
+                return SubversionSccProvider.AnkhSVN;
 
             return SubversionSccProvider.Disabled;
         }
@@ -248,14 +238,14 @@ namespace SourceControlSwitcher
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            if (IsSccPackageInstalled(HgSccPackagePackageId))
-                return MercurialSccProvider.HgSccPackage;
+            if (IsSccPackageInstalled(VSHGPackageIds))
+                return MercurialSccProvider.VSHG;
 
-            if (IsSccPackageInstalled(VisualHGPackageId))
+            if (IsSccPackageInstalled(VisualHGPackageIds))
                 return MercurialSccProvider.VisualHG;
 
-            if (IsSccPackageInstalled(VSHGPackageId))
-                return MercurialSccProvider.VSHG;
+            if (IsSccPackageInstalled(HgSccPackagePackageIds))
+                return MercurialSccProvider.HgSccPackage;
 
             return MercurialSccProvider.Disabled;
         }
@@ -264,7 +254,7 @@ namespace SourceControlSwitcher
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            if (IsSccPackageInstalled(P4VSPackageId))
+            if (IsSccPackageInstalled(P4VSPackageIds))
                 return PerforceSccProvider.P4VS;
 
             return PerforceSccProvider.Disabled;
@@ -273,11 +263,45 @@ namespace SourceControlSwitcher
         public static bool IsSccPackageInstalled(string packageId)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            return IsSccPackageInstalled(Guid.Parse(packageId));
+        }
+
+        public static bool IsSccPackageInstalled(Guid packageId)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
             int installed = 0;
-            var guid = Guid.Parse(packageId);
-            var hr = _VsShell.IsPackageInstalled(ref guid, out installed);
+            var hr = _VsShell.IsPackageInstalled(ref packageId, out installed);
             Marshal.ThrowExceptionForHR(hr);
             return installed == 1;
+        }
+
+        public static bool IsSccPackageInstalled(string[] packageId)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return GetSccInstalledPackageId(packageId) != Guid.Empty;
+        }
+
+        public static bool IsSccPackageInstalled(Guid[] packageId)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return GetSccInstalledPackageId(packageId) != Guid.Empty;
+        }
+
+        public static Guid GetSccInstalledPackageId(string[] packageIds)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var lst = new List<Guid>();
+            foreach (var id in packageIds)
+                lst.Add(new Guid(id));
+            return GetSccInstalledPackageId(lst.ToArray());
+        }
+
+        public static Guid GetSccInstalledPackageId(Guid[] packageIds)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            foreach (var g in packageIds)
+                if (IsSccPackageInstalled(g)) return g;
+            return Guid.Empty;
         }
 
         public static PerforceSccProvider GetPerforceSccProvider()
@@ -288,6 +312,7 @@ namespace SourceControlSwitcher
 
         public static RcsType GetLoadedRcsType()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             SccProvider provider = GetCurrentSccProvider();
             return GetRcsTypeFromSccProvider(provider);
         }
@@ -323,12 +348,12 @@ namespace SourceControlSwitcher
         [Description("Git Source Control Provider")]
         [Display(Name = "Git Source Control Provider")]
         [LocDisplayName("Git Source Control Provider")]
-        GitSourceControlProvider,
+        EasyGitIntegrationTools,
 
         [Description("EZ-GIT")]
         [Display(Name = "EZ-GIT")]
         [LocDisplayName("EZ-GIT")]
-        EzGit_2019,
+        GitTools2019,
 
         [Description("Visual Studio Tools for Git")]
         [Display(Name = "Visual Studio Tools for Git")]

@@ -1,9 +1,19 @@
+SourceControlSwitch - v1.1
+------------------------------------------
+  * Removed support for VS2013
+  * Improved support for VS2015 and VS2017
+  * Added support for different versions of the same SCC packages
+  * Removed GitSourceControlPackage, which is now an alternate version of Easy Git Integration Tools
+  * Changed the behaviour of the "Default" option: 
+  ** BEFORE: an arbitrary SCC package for that given provider
+  ** NOW: the first SCC package found *among the installed ones* for that given provider
+
 SourceControlSwitch - v1.0
 ------------------------------------------
   * Async Loading
   * Added support for VS2019
   * Added support for the following Source Control Providers:
   ** SVN:			AnkhSVN, VisualSVN, VisualSVN 2019
-  ** GIT:			Visual Studio Tools for Git, EZ-GIT (Easy Git Integration Tool), Git Source Control Provider
+  ** GIT:			Visual Studio Tools for Git, Easy Git Integration Tools (EZ-GIT), Git Source Control Package
   ** HG/MERCURIAL:	HgSccPackage, VisualHG, VSHG
   ** HELIX:			P4VS

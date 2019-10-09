@@ -16,7 +16,11 @@ namespace SourceControlSwitcher
         public GitSccProvider GitProvider
         {
             get { return MainSite.GetGitSccProvider(); }
-            set { MainSite.SetGitSccProvider(value); }
+            set
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                MainSite.SetGitSccProvider(value); 
+            }
         }
 
         [DisplayName("Subversion Provider")]
@@ -25,7 +29,11 @@ namespace SourceControlSwitcher
         public SubversionSccProvider SubversionProvider
         {
             get { return MainSite.GetSubversionSccProvider(); }
-            set { MainSite.SetSubversionSccProvider(value); }
+            set 
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                MainSite.SetSubversionSccProvider(value); 
+            }
         }
 
         [DisplayName("Mercurial Provider")]
@@ -34,7 +42,11 @@ namespace SourceControlSwitcher
         public MercurialSccProvider MercurialProvider
         {
             get { return MainSite.GetMercurialSccProvider(); }
-            set { MainSite.SetMercurialSccProvider(value); }
+            set 
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                MainSite.SetMercurialSccProvider(value); 
+            }
         }
 
         [DisplayName("Perforce Provider")]
@@ -43,7 +55,11 @@ namespace SourceControlSwitcher
         public PerforceSccProvider PerforceProvider
         {
             get { return MainSite.GetPerforceSccProvider(); }
-            set { MainSite.SetPerforceSccProvider(value); }
+            set 
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                MainSite.SetPerforceSccProvider(value); 
+            }
         }
     }
 
@@ -52,15 +68,10 @@ namespace SourceControlSwitcher
     {
         Default = 0,
 
-        [Description("Git Source Control Provider")]
-        [Display(Name = "Git Source Control Provider")]
-        [LocDisplayName("Git Source Control Provider")]
-        GitSourceControlProvider,
-
-        [Description("EZ-GIT")]
-        [Display(Name = "EZ-GIT")]
-        [LocDisplayName("EZ-GIT")]
-        EzGit_2019,
+        [Description("Easy Git Integration Tools (EZ-GIT)")]
+        [Display(Name = "Easy Git Integration Tools (EZ-GIT)")]
+        [LocDisplayName("Easy Git Integration Tools (EZ-GIT)")]
+        EasyGitIntegrationTools,
 
         [Description("Visual Studio Tools for Git")]
         [Display(Name = "Visual Studio Tools for Git")]
@@ -83,11 +94,6 @@ namespace SourceControlSwitcher
         [Display(Name = "VisualSVN")]
         [LocDisplayName("VisualSVN")]
         VisualSVN,
-
-        [Description("VisualSVN 2019")]
-        [Display(Name = "VisualSVN 2019")]
-        [LocDisplayName("VisualSVN 2019")]
-        VisualSVN2019,
 
         Disabled
     }

@@ -9,6 +9,7 @@ using System.Text;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio;
 using System.IO;
+using Microsoft.VisualStudio.Shell;
 
 namespace SourceControlSwitcher
 {
@@ -122,6 +123,7 @@ namespace SourceControlSwitcher
             {
                 if (Directory.Exists(Path.Combine(currdir.FullName, SVN_DIR)))
                 {
+                    ThreadHelper.ThrowIfNotOnUIThread();
                     MainSite.RegisterPrimarySourceControlProvider(RcsType.Subversion);
                     _CurrentSolutionRcsType = RcsType.Subversion;
                     break;

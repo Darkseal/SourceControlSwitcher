@@ -27,7 +27,7 @@ namespace SourceControlSwitcher
 {
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
-    [Guid(GuidList.guidPkgString)]
+    [Guid(GuidList.GuidPkgString)]
     [ProvideAutoLoad(UIContextGuids80.NoSolution, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideOptionPage(typeof(SwitcherOptions), "Source Control Switcher", "Source Control Providers", 101, 106, true)] // Options dialog page
     public sealed partial class MainSite : AsyncPackage, IVsSolutionEvents3, IVsSolutionLoadEvents
@@ -41,12 +41,6 @@ namespace SourceControlSwitcher
         private static IVsShell _VsShell;
         private static WritableSettingsStore _SettingsStore;
         private static RcsType _CurrentSolutionRcsType;
-
-#if DEBUG
-        private readonly bool Debug = true;
-#else
-        private readonly bool Debug = false;
-#endif
 
         public MainSite() { }
 
@@ -75,7 +69,7 @@ namespace SourceControlSwitcher
             _VsGetScciProviderInterface = await GetServiceAsync(typeof(IVsRegisterScciProvider)) as IVsGetScciProviderInterface;
             _SettingsStore = GetWritableSettingsStore();
 
-            if (Debug)
+            if (AppHelper.Debug)
             {
                 TaskManager.Initialize(this);
                 solutionEvents = ((Events2)_DTE2.Events).SolutionEvents;
@@ -86,16 +80,20 @@ namespace SourceControlSwitcher
         void SolutionEvents_Opened()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            var getProvider = GetService(typeof(IVsRegisterScciProvider)) as IVsGetScciProviderInterface;
-            Assumes.Present(getProvider);
+            //var getProvider = GetService(typeof(IVsRegisterScciProvider)) as IVsGetScciProviderInterface;
+            //Assumes.Present(getProvider);
             Guid pGuid;
-            getProvider.GetSourceControlProviderID(out pGuid);         
-            TaskManager.AddWarning(String.Format("[DEBUG] Current Source Control Provider ID: {0}", pGuid.ToString()));
+            _VsGetScciProviderInterface.GetSourceControlProviderID(out pGuid);
+            var msg = String.Format("Current Source Control Provider ID: {0}", pGuid.ToString());
+            AppHelper.Output(msg);
         }
 
         public static void RegisterPrimarySourceControlProvider(RcsType rcsType)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+
+            AppHelper.Output(String.Format("Registering Primary Source Control Provider: {0}", rcsType.ToString()));
+
             int hr;
             Guid packageGuid = new Guid();
             Guid sccProviderGuid = new Guid();
@@ -126,21 +124,28 @@ namespace SourceControlSwitcher
                     }
             }
 
+            AppHelper.Output(String.Format("Provider to Load: {0}, Enabled: {1}", providerToLoad.ToString(), enabled));
+
             if (!enabled)
                 return;
 
             SccProvider currentSccProvider = GetCurrentSccProvider();
+            AppHelper.Output(String.Format("Current Provider: {0}", currentSccProvider.ToString()));
+
             if (providerToLoad == currentSccProvider)
                 return;
 
-            int installed;
-            hr = _VsShell.IsPackageInstalled(ref packageGuid, out installed);
-            Marshal.ThrowExceptionForHR(hr);
-            if (installed == 0)
+            var installed = IsSccPackageInstalled(packageGuid);
+
+            AppHelper.Output(String.Format("Provider {0} installed: {1}", providerToLoad.ToString(), installed));
+
+            if (!installed)
                 return;
 
             hr = _VsRegisterScciProvider.RegisterSourceControlProvider(sccProviderGuid);
             Marshal.ThrowExceptionForHR(hr);
+
+            AppHelper.Output(String.Format("Provider {0} registered (providerGuid: {1})", providerToLoad.ToString(), sccProviderGuid.ToString()));
         }
 
         /// <returns>false if handling the scc provider is disabled for this Rcs type</returns>
@@ -165,23 +170,16 @@ namespace SourceControlSwitcher
             {
                 case GitSccProvider.VisualStudioToolsForGit:
                     {
-                        packageGuid = new Guid(VSToolsForGitPackagedId);
+                        packageGuid = GetSccInstalledPackageId(VSToolsForGitPackageIds);
                         sccProviderGuid = new Guid(VSToolsForGitSccProviderId);
                         provider = SccProvider.VisualStudioToolsForGit;
                         return true;
                     }
-                case GitSccProvider.GitSourceControlProvider:
+                case GitSccProvider.EasyGitIntegrationTools:
                     {
-                        packageGuid = new Guid(GitSourceControlProviderPackagedId);
-                        sccProviderGuid = new Guid(GitSourceControlProviderSccProviderId);
-                        provider = SccProvider.GitSourceControlProvider;
-                        return true;
-                    }
-                case GitSccProvider.EzGit_2019:
-                    {
-                        packageGuid = new Guid(EzGitPackagedId);
-                        sccProviderGuid = new Guid(EzGitProviderdId);
-                        provider = SccProvider.EzGit_2019;
+                        packageGuid = GetSccInstalledPackageId(EasyGitIntegrationToolsPackageIds);
+                        sccProviderGuid = new Guid(EasyGitIntegrationToolsSccProviderId);
+                        provider = SccProvider.EasyGitIntegrationTools;
                         return true;
                     }
                 default:
@@ -192,6 +190,7 @@ namespace SourceControlSwitcher
         /// <returns>false if handling the scc provider is disabled for this Rcs type</returns>
         private static bool RegisterSubversionScc(out Guid packageGuid, out Guid sccProviderGuid, out SccProvider provider)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             SubversionSccProvider svnProvider = GetSubversionSccProvider();
 
             if (svnProvider == SubversionSccProvider.Default)
@@ -209,23 +208,16 @@ namespace SourceControlSwitcher
             {
                 case SubversionSccProvider.AnkhSVN:
                     {
-                        packageGuid = new Guid(AnkhSvnPackageId);
+                        packageGuid = GetSccInstalledPackageId(AnkhSvnPackageIds);
                         sccProviderGuid = new Guid(AnkhSvnSccProviderId);
                         provider = SccProvider.AnkhSvn;
                         return true;
                     }
                 case SubversionSccProvider.VisualSVN:
                     {
-                        packageGuid = new Guid(VisualSvnPackageId);
+                        packageGuid = GetSccInstalledPackageId(VisualSvnPackageIds);
                         sccProviderGuid = new Guid(VisualSvnSccProviderId);
                         provider = SccProvider.VisualSVN;
-                        return true;
-                    }
-                case SubversionSccProvider.VisualSVN2019:
-                    {
-                        packageGuid = new Guid(VisualSvn2019PackageId);
-                        sccProviderGuid = new Guid(VisualSvn2019SccProviderId);
-                        provider = SccProvider.VisualSVN_2019;
                         return true;
                     }
                 default:
@@ -236,6 +228,8 @@ namespace SourceControlSwitcher
         /// <returns>false if handling the scc provider is disabled for this Rcs type</returns>
         private static bool RegisterMercurialScc(out Guid packageGuid, out Guid sccProviderGuid, out SccProvider provider)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             MercurialSccProvider mercurialProvider = GetMercurialSccProvider();
 
             if (mercurialProvider == MercurialSccProvider.Default)
@@ -253,21 +247,21 @@ namespace SourceControlSwitcher
             {
                 case MercurialSccProvider.HgSccPackage:
                     {
-                        packageGuid = new Guid(HgSccPackagePackageId);
+                        packageGuid = GetSccInstalledPackageId(HgSccPackagePackageIds);
                         sccProviderGuid = new Guid(HgSccPackageSccProviderId);
                         provider = SccProvider.HgSccPackage;
                         return true;
                     }
                 case MercurialSccProvider.VisualHG:
                     {
-                        packageGuid = new Guid(VisualHGPackageId);
+                        packageGuid = GetSccInstalledPackageId(VisualHGPackageIds);
                         sccProviderGuid = new Guid(VisualHGSccProviderId);
                         provider = SccProvider.VisualHG;
                         return true;
                     }
                 case MercurialSccProvider.VSHG:
                     {
-                        packageGuid = new Guid(VSHGPackageId);
+                        packageGuid = GetSccInstalledPackageId(VSHGPackageIds);
                         sccProviderGuid = new Guid(VSHGProviderId);
                         provider = SccProvider.VSHG;
                         return true;
@@ -279,12 +273,11 @@ namespace SourceControlSwitcher
 
         private static bool RegisterPerforceScc(out Guid packageGuid, out Guid sccProviderGuid, out SccProvider provider)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             PerforceSccProvider perforceProvider = GetPerforceSccProvider();
 
             if (perforceProvider == PerforceSccProvider.Default)
-            {
                 perforceProvider = GetDefaultPerforceSccProvider();
-            }
 
             switch (perforceProvider)
             {
@@ -294,8 +287,8 @@ namespace SourceControlSwitcher
                     provider = SccProvider.Unknown;
                     return false;
                 case PerforceSccProvider.P4VS:
-                    packageGuid = new Guid(P4VSPackageId);
-                    sccProviderGuid = new Guid(P4VSPackageSccProviderId);
+                    packageGuid = GetSccInstalledPackageId(P4VSPackageIds);
+                    sccProviderGuid = new Guid(P4VSProviderId);
                     provider = SccProvider.P4VS;
                     return true;
                 case PerforceSccProvider.Default:

@@ -12,30 +12,33 @@ which will be added to your Visual Studio
 
 ![Source Control Switcher - Options Screenshot](https://www.ryadel.com/wp-content/uploads/2019/10/ss-01-1.png)
 
-Supported Source Control Providers are:
+Supported Source Control Clients (and their provider) are:
 
- * **AnkhSVN** *(Subversion, default)*
+ * **AnkhSVN** *(Subversion)*
  * **VisualSVN** *(Subversion)*
  * **VisualSVN 2019** *(Subversion)*
- * **Visual Studio Tools for Git** *(Git, default)*
- * **EZ-GIT (Easy Git Integration Tool)** *(Git)*
+ * **Easy Git Integration Tools (EZ-GIT)** *(Git)*
  * **Git Source Control Provider** *(Git)*
- * **HgSccPackage** *(Mercurial, default)*
+ * **HgSccPackage** *(Mercurial)*
  * **VisualHG** *(Mercurial)*
  * **VSHG** *(Mercurial)*
- * **P4VS** *(Helix, default)*
- 
+ * **P4VS** *(Helix)*
+
 More providers can be added, provided they are regular source control providers 
 and there exists an easy way to detect
 proper RCS type by checking file or directories presence
 starting from solution root directory.
 
-It supports all Visual Studio versions from 2015 to 2019.
+Each provider (Subversion, Git, Mercurial or Helix) can be configured to either load a specific client 
+(among those supported) or to get the first installed one found (Default).
+
+The extension is fully compatible with VS2015, VS2017 and VS2019.
+
 License is MIT.
 
 This extension is strongly based to [SccAutoSwitcher](https://github.com/ceztko/SccAutoSwitcher) by *Francesco Pretto*, 
 which sadly seems to be no longer updated 
-and lack VS2019 support and async loading support 
+and lack some important features such as VS2019 support and async loading support
 (which led me to create this project).
 
 ## Useful References
