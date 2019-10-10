@@ -12,7 +12,9 @@ which will be added to your Visual Studio
 
 ![Source Control Switcher - Options Screenshot](https://www.ryadel.com/wp-content/uploads/2019/10/ss-01-1.png)
 
-Alternatively you can use the **Default** feature to let the extension automatically pick 
+Once done, your favourite Source Control Provider will be automatically set everytime you open an existing project or solution.
+
+Alternatively, you can use the **Default** feature to let the extension automatically pick 
 a suitable Source Control Client among those installed on your system. 
 This is often the best choice if you've only installed a single client/extension for each Source Control Provider.
 
