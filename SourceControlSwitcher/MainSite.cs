@@ -29,6 +29,12 @@ namespace SourceControlSwitcher
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
     [Guid(GuidList.GuidPkgString)]
     [ProvideAutoLoad(UIContextGuids80.NoSolution, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(UIContextGuids80.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(UIContextGuids80.SolutionHasMultipleProjects, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(UIContextGuids80.SolutionHasSingleProject, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(UIContextGuids80.SolutionExistsAndNotBuildingAndNotDebugging, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(UIContextGuids80.NotBuildingAndNotDebugging, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(UIContextGuids80.ToolboxInitialized, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideOptionPage(typeof(SwitcherOptions), "Source Control Switcher", "Source Control Providers", 101, 106, true)] // Options dialog page
     public sealed partial class MainSite : AsyncPackage, IVsSolutionEvents3, IVsSolutionLoadEvents
     {
@@ -69,23 +75,29 @@ namespace SourceControlSwitcher
             _VsGetScciProviderInterface = await GetServiceAsync(typeof(IVsRegisterScciProvider)) as IVsGetScciProviderInterface;
             _SettingsStore = GetWritableSettingsStore();
 
-            if (AppHelper.Debug)
-            {
-                TaskManager.Initialize(this);
-                solutionEvents = ((Events2)_DTE2.Events).SolutionEvents;
-                solutionEvents.Opened += new _dispSolutionEvents_OpenedEventHandler(this.SolutionEvents_Opened);
-            }
+            TaskManager.Initialize(this);
+            solutionEvents = ((Events2)_DTE2.Events).SolutionEvents;
+            solutionEvents.Opened += new _dispSolutionEvents_OpenedEventHandler(this.SolutionEvents_Opened);
         }
 
         void SolutionEvents_Opened()
         {
+            AppHelper.Output("SolutionEvents_Opened");
+
             ThreadHelper.ThrowIfNotOnUIThread();
             //var getProvider = GetService(typeof(IVsRegisterScciProvider)) as IVsGetScciProviderInterface;
             //Assumes.Present(getProvider);
-            Guid pGuid;
-            _VsGetScciProviderInterface.GetSourceControlProviderID(out pGuid);
-            var msg = String.Format("Current Source Control Provider ID: {0}", pGuid.ToString());
-            AppHelper.Output(msg);
+
+            if (AppHelper.Debug)
+            {
+                Guid pGuid;
+                _VsGetScciProviderInterface.GetSourceControlProviderID(out pGuid);
+                var msg = String.Format("Current Source Control Provider ID: {0}", pGuid.ToString());
+                AppHelper.Output(msg);
+            }
+
+            //_CurrentSolutionRcsType = RcsType.Unknown;
+            SetSCC(_DTE2.Solution.FullName);
         }
 
         public static void RegisterPrimarySourceControlProvider(RcsType rcsType)

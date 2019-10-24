@@ -29,6 +29,11 @@ namespace SourceControlSwitcher
             return VSConstants.S_OK;
         }
 
+        public int OnBeforeLoadProject(IVsHierarchy pHierarchy)
+        {
+            return VSConstants.S_OK;
+        }
+
         public int OnAfterLoadProject(IVsHierarchy pStubHierarchy, IVsHierarchy pRealHierarchy)
         {
             return VSConstants.S_OK;
@@ -46,6 +51,8 @@ namespace SourceControlSwitcher
 
         public int OnAfterOpenSolution(object pUnkReserved, int fNewSolution)
         {
+            //SetSCC(_DTE2.Solution.FullName);
+            AppHelper.Output("OnAfterOpenSolution");
             return VSConstants.S_OK;
         }
 
@@ -116,44 +123,9 @@ namespace SourceControlSwitcher
 
         public int OnBeforeOpenSolution(string pszSolutionFilename)
         {
-            DirectoryInfo solutionDir = new DirectoryInfo(Path.GetDirectoryName(pszSolutionFilename));
-            DirectoryInfo currdir = solutionDir;
+            AppHelper.Output("OnBeforeOpenSolution");
             _CurrentSolutionRcsType = RcsType.Unknown;
-            while (true)
-            {
-                if (Directory.Exists(Path.Combine(currdir.FullName, SVN_DIR)))
-                {
-                    ThreadHelper.ThrowIfNotOnUIThread();
-                    MainSite.RegisterPrimarySourceControlProvider(RcsType.Subversion);
-                    _CurrentSolutionRcsType = RcsType.Subversion;
-                    break;
-                }
-
-                if (Directory.Exists(Path.Combine(currdir.FullName, GIT_DIR)))
-                {
-                    MainSite.RegisterPrimarySourceControlProvider(RcsType.Git);
-                    _CurrentSolutionRcsType = RcsType.Git;
-                    break;
-                }
-
-                if (Directory.Exists(Path.Combine(currdir.FullName, MERCURIAL_DIR)))
-                {
-                    MainSite.RegisterPrimarySourceControlProvider(RcsType.Mercurial);
-                    _CurrentSolutionRcsType = RcsType.Mercurial;
-                    break;
-                }
-
-                if (currdir.Parent == null)
-                    break;
-
-                currdir = currdir.Parent;
-            }
-
-            if (_CurrentSolutionRcsType == RcsType.Unknown && IsPerforce(solutionDir))
-            {
-                MainSite.RegisterPrimarySourceControlProvider(RcsType.Perforce);
-                _CurrentSolutionRcsType = RcsType.Perforce;
-            }
+            SetSCC(pszSolutionFilename);
 
             return VSConstants.S_OK;
         }
@@ -189,6 +161,62 @@ namespace SourceControlSwitcher
         {
             pfShouldDelayLoadToNextIdle = false;
             return VSConstants.S_OK;
+        }
+
+        public RcsType SetSCC(string pszSolutionFilename)
+        {
+            DirectoryInfo solutionDir = new DirectoryInfo(Path.GetDirectoryName(pszSolutionFilename));
+            DirectoryInfo currdir = solutionDir;
+            var oldRcsType = _CurrentSolutionRcsType;
+            ThreadHelper.ThrowIfNotOnUIThread();
+            while (true)
+            {
+                if (Directory.Exists(Path.Combine(currdir.FullName, GIT_DIR)))
+                {
+                    if (_CurrentSolutionRcsType != RcsType.Git)
+                    {
+                        MainSite.RegisterPrimarySourceControlProvider(RcsType.Git);
+                        _CurrentSolutionRcsType = RcsType.Git;
+                    }
+                    break;
+                }
+
+                if (Directory.Exists(Path.Combine(currdir.FullName, MERCURIAL_DIR)))
+                {
+                    if (_CurrentSolutionRcsType != RcsType.Mercurial)
+                    {
+                        MainSite.RegisterPrimarySourceControlProvider(RcsType.Mercurial);
+                        _CurrentSolutionRcsType = RcsType.Mercurial;
+                    }
+                    break;
+                }
+
+                if (Directory.Exists(Path.Combine(currdir.FullName, SVN_DIR)))
+                {
+                    if (_CurrentSolutionRcsType != RcsType.Subversion)
+                    {
+                        MainSite.RegisterPrimarySourceControlProvider(RcsType.Subversion);
+                        _CurrentSolutionRcsType = RcsType.Subversion;
+                    }
+                    break;
+                }
+
+
+                if (currdir.Parent == null)
+                    break;
+
+                currdir = currdir.Parent;
+            }
+
+            if (_CurrentSolutionRcsType == oldRcsType 
+                && _CurrentSolutionRcsType != RcsType.Perforce 
+                && IsPerforce(solutionDir))
+            {
+                MainSite.RegisterPrimarySourceControlProvider(RcsType.Perforce);
+                _CurrentSolutionRcsType = RcsType.Perforce;
+            }
+
+            return _CurrentSolutionRcsType;
         }
     }
 }

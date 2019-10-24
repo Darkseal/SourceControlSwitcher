@@ -1,4 +1,9 @@
-SourceControlSwitch - v1.1
+SourceControlSwitcher - v1.1.1
+------------------------------------------
+  * Minor performance fixes.
+  * Fixed a bug that prevented the extension to run for solutions opened via the new VS2019 Startup Window.
+
+SourceControlSwitcher - v1.1.0
 ------------------------------------------
   * Removed support for VS2013
   * Improved support for VS2015 and VS2017
@@ -8,7 +13,7 @@ SourceControlSwitch - v1.1
   ** BEFORE: an arbitrary SCC package for that given provider
   ** NOW: the first SCC package found *among the installed ones* for that given provider
 
-SourceControlSwitch - v1.0
+SourceControlSwitcher - v1.0.0
 ------------------------------------------
   * Async Loading
   * Added support for VS2019
