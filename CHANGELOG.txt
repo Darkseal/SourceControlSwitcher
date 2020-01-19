@@ -1,3 +1,7 @@
+SourceControlSwitcher - v1.1.2
+------------------------------------------
+  * fix:cannot switch source control when visual studio start with sln (@QianMoXi)
+
 SourceControlSwitcher - v1.1.1
 ------------------------------------------
   * Minor performance fixes.
