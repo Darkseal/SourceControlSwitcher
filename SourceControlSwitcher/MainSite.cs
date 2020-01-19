@@ -78,6 +78,7 @@ namespace SourceControlSwitcher
             TaskManager.Initialize(this);
             solutionEvents = ((Events2)_DTE2.Events).SolutionEvents;
             solutionEvents.Opened += new _dispSolutionEvents_OpenedEventHandler(this.SolutionEvents_Opened);
+            SolutionEvents_Opened();
         }
 
         void SolutionEvents_Opened()
@@ -97,7 +98,10 @@ namespace SourceControlSwitcher
             }
 
             //_CurrentSolutionRcsType = RcsType.Unknown;
-            SetSCC(_DTE2.Solution.FullName);
+            if (!string.IsNullOrWhiteSpace(_DTE2?.Solution?.FullName))
+            {
+                SetSCC(_DTE2.Solution.FullName);
+            }
         }
 
         public static void RegisterPrimarySourceControlProvider(RcsType rcsType)
