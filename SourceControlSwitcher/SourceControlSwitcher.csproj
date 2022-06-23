@@ -211,7 +211,7 @@
       <Version>0.2.16</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.2</Version>
+      <Version>13.0.1</Version>
     </PackageReference>
     <PackageReference Include="System.IO.FileSystem.Primitives">
       <Version>4.3.0</Version>
