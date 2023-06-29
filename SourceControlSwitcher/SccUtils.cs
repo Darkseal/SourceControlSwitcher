@@ -16,7 +16,7 @@ namespace SourceControlSwitcher
 {
     public partial class MainSite
     {
-        public static readonly string[] AnkhSvnPackageIds = { "604ad610-5cf9-4bd5-8acc-f49810e2efd4" };
+        public static readonly string[] AnkhSvnPackageIds = { "604ad610-5cf9-4bd5-8acc-f49810e2efd4" ,"321833BC-D00D-4076-9FDD-AC485EFDAEB2" };
         public const string AnkhSvnSccProviderId = "8770915b-b235-42ec-bbc6-8e93286e59b5";
 
         public static readonly string[] VisualSvnPackageIds = { "133240d5-fafa-4868-8fd7-5190a259e676", "83F1E506-04BC-4694-9C7D-C55B120E11F0" };
